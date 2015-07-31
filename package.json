@@ -1,6 +1,6 @@
 {
   "name": "container-ts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "lightweight annotation-based dependency injection container for typescript",
   "devDependencies": {
     "chai": "2.0.0",
@@ -12,7 +12,7 @@
     "grunt-notify": "^0.4.1",
     "grunt-typescript": "0.6.2"
   },
-   "dependencies": {
+  "dependencies": {
     "immutable": "^3.7.4",
     "reflect-metadata": "^0.1.0"
   },
@@ -25,7 +25,11 @@
     "url": "git://github.com/mserranom/container-ts.git"
   },
   "keywords": [
-    "typescript", "ioc","di","annotations","decorators"
+    "typescript",
+    "ioc",
+    "di",
+    "annotations",
+    "decorators"
   ],
   "author": {
     "name": "Miguel Serrano",
