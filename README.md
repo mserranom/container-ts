@@ -48,7 +48,7 @@ MainClass {
 
     @Destroy
     destroy() {
-        console.log('destroy'); // output: "Hello!"
+        console.log('destroy');
     }
 }
 
