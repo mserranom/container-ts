@@ -16,7 +16,7 @@ class TestClass  {
     destroyed : boolean = false;
     
     @PostConstruct
-    init() : void {
+    private init() : void {
         this.initialised = true;
     }
     
