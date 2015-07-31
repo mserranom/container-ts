@@ -40,7 +40,7 @@ module.exports = function (grunt) {
                 target: 'ES5',
                 basePath: project.srcDir,
                 sourceMap: false,
-                declaration: false
+                declaration: true
             }
         },
 
