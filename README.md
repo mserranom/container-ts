@@ -5,7 +5,6 @@ Lightweight annotation-based dependency injection container for typescript.
 
 ## API
 ```typescript
-
 Container {
     add(item: any): void;
     add(item: any, name: string): void;
@@ -19,10 +18,8 @@ class ContainerBuilder {
     static create(): Container;
 }
 
-
 // decorators
-
 @Inject(selector: () => any | string)
-@Destroy(
-@Inject
+@Destroy
+@PostConstruct
 ```
