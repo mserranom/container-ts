@@ -127,7 +127,7 @@ export function Destroy(target:any, propertyKey:string, descriptor:any) {
     return descriptor;
 }
 
-export function Inject(parameter:any) {
+export function Inject(parameter: (() => any) | string) {
     return function (target:any, propertyKey:any) {
         if (!target['__injections']) {
             target.__injections = [];

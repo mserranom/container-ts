@@ -23,7 +23,7 @@ module.exports = function (grunt) {
         clean:{
             target:[ project.targetDir,'_SpecRunner.html', project.srcDir + '/**/*.js', project.srcDir + '/**/*.js.map',
                 project.srcDir + '/**/*.html', project.testDir + '/**/*.js',  project.testDir + '/**/*.js.map',
-                project.testDir + '/**/*.html']
+                project.srcDir + '/**/*.d.ts', project.testDir + '/**/*.d.ts',project.testDir + '/**/*.html']
         },
 
         typescript: {
@@ -40,7 +40,8 @@ module.exports = function (grunt) {
                 target: 'ES5',
                 basePath: project.srcDir,
                 sourceMap: false,
-                declaration: true
+                declaration: true,
+                removeComments: true
             }
         },
 

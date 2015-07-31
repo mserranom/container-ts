@@ -34,7 +34,11 @@ _SpecRunner.html
 *.iws
 
 src/*.js
-test/ts/*.js
+test/*.js
+
+src/*.d.ts
+test/*.d.ts
+
 
 dist.zip
 
