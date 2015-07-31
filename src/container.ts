@@ -1,8 +1,6 @@
-///<reference path="../node_modules/reflect-metadata/reflect-metadata.d.ts"/>
 ///<reference path='../node_modules/immutable/dist/immutable.d.ts'/>
 import Immutable = require('immutable');
 
-import "reflect-metadata";
 
 export interface Container {
     add(item:any) : void;
@@ -24,12 +22,21 @@ class ContainerImpl implements Container {
     private _contentByCtor:Immutable.Map<Function, any> = Immutable.Map<Function, any>();
     private _contentByName:Immutable.Map<string, any> = Immutable.Map<string, any>();
 
+    private _isInitialised : Boolean = false;
+    private _isDestroyed : Boolean = false;
+
     add(item:any, name?:string):void {
+        if(this._isDestroyed) {
+            throw 'cannot add elements to a destroyed context';
+        }
         if(name) {
             this._contentByName = this._contentByName.set(name, item);
         }
         else {
             this._contentByCtor = this._contentByCtor.set(item.constructor, item);
+        }
+        if(this._isInitialised) {
+            this.resolveInjectionsFor(item);
         }
     }
 
@@ -42,21 +49,26 @@ class ContainerImpl implements Container {
     }
 
     init():void {
+        if(this._isInitialised) {
+            throw 'the container is already initialised'
+        }
         this.resolveInjections();
         this.postConstruct();
+        this._isInitialised = true;
     }
 
     resolveInjections():void {
-        let resolveInjection = (item:any) => {
-            if (item.__resolveDependencies) {
-                item.__resolveDependencies(item, this);
-            }
-        };
-        this.getAll().forEach((item:any) => resolveInjection(item));
+        this.getAll().forEach((item:any) => this.resolveInjectionsFor(item));
+    }
+
+    private resolveInjectionsFor(item : any) : void {
+        if (item.__resolveDependencies) {
+            item.__resolveDependencies(item, this);
+        }
     }
 
     postConstruct():void {
-        let resolvePostConstruct = function (item:any) {
+        let resolvePostConstruct = (item:any) => {
             if (item.__resolvePostconstruct) {
                 item.__resolvePostconstruct(item);
             }
@@ -65,7 +77,13 @@ class ContainerImpl implements Container {
     }
 
     destroy() {
-        let resolveDestroy = function (item:any) {
+        if(this._isDestroyed) {
+            throw 'the container is already destroyed'
+        }
+        if(!this._isInitialised) {
+            throw "the container hasn't been initialised"
+        }
+        let resolveDestroy = (item:any) => {
             if (item.__resolveDestroy) {
                 item.__resolveDestroy(item);
             }
@@ -73,6 +91,7 @@ class ContainerImpl implements Container {
         this.getAll().forEach((item:any) => resolveDestroy(item));
         this._contentByCtor = Immutable.Map<Function, any>();
         this._contentByName = Immutable.Map<string, any>();
+        this._isDestroyed = true;
     }
 
     private getAll() : Immutable.Iterable<any, any> {

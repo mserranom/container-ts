@@ -34,12 +34,18 @@ class TestDependency2  {
     label : string = 'hiya';
 }
 
-describe('container: ', () => {
+describe('Container: ', () => {
 
-    let container : Container = ContainerBuilder.create();
+    let container : Container;
+
+    beforeEach(() => {
+        container = ContainerBuilder.create();
+    });
     
     afterEach(() => {
-       container.destroy();
+        try {
+            container.destroy();
+        } catch(error) {}
     });
 
     it('can have elements added and retrieved from the container',() => {
@@ -118,7 +124,81 @@ describe('container: ', () => {
 
         expect(testObject2.dep1.label).equals('hi');
     });
-    
+
+    it('should throw an error when trying to initialise the context twice',() => {
+        container.init();
+        expect(() => container.init()).to.throw('the container is already initialised');
+    });
+
+    it('should throw an error when trying to destroy a context not initialised',() => {
+        expect(() => container.destroy()).to.throw("the container hasn't been initialised");
+    });
+
+    it('should throw an error when trying to destroy a context twice',() => {
+        container.init();
+        container.destroy();
+        expect(() => container.destroy()).to.throw('the container is already destroyed');
+    });
+
+    it('should throw an error when adding elements to a destroyed context',() => {
+        container.init();
+        container.destroy();
+        expect(() => container.add(new TestClass())).to.throw('cannot add elements to a destroyed context');
+    });
+
+    it('should resolve injections for dynamically added elements',() => {
+        container.add(new TestClass());
+        container.add(new TestDependency1());
+        container.add(new TestDependency2(), 'dependency');
+        container.init();
+
+        let testObject = new TestClass();
+        container.add(testObject, 'secondTestClass');
+
+        expect(testObject.dep1.label).equals('hi');
+        expect(testObject.dep2.label).equals('hiya');
+    });
+
+    it('should allow multiple named elements of same type', () => {
+        container.add(new TestClass());
+        container.add(new TestClass(), 'element1');
+        container.add(new TestClass(), 'element2');
+        container.add(new TestDependency1());
+        container.add(new TestDependency2(), 'dependency');
+        container.init();
+
+        let element = container.get(TestClass);
+        let element1 = container.get('element1');
+        let element2 = container.get('element2');
+
+        // making sure the elements exists and are all different
+        expect(element).not.to.be.undefined
+        expect(element1).not.to.be.undefined
+        expect(element2).not.to.be.undefined
+        expect(element).not.to.be.null
+        expect(element1).not.to.be.null
+        expect(element2).not.to.be.null
+
+        expect(element).not.equals(element1);
+        expect(element).not.equals(element2);
+        expect(element1).not.equals(element2);
+
+        // making sure they're resolved to the same dependencies
+        expect(element.dep1).not.to.be.undefined;
+        expect(element.dep2).not.to.be.undefined;
+        expect(element.dep1).not.to.be.null;
+        expect(element.dep2).not.to.be.null;
+
+        expect(element.dep1).equals(element1.dep1);
+        expect(element.dep1).equals(element2.dep1);
+        expect(element1.dep1).equals(element2.dep1);
+
+        expect(element.dep2).equals(element1.dep2);
+        expect(element.dep2).equals(element2.dep2);
+        expect(element1.dep2).equals(element2.dep2);
+
+    });
+
 });
 
 
