@@ -20,6 +20,6 @@ class ContainerBuilder {
 
 // decorators
 @Inject(selector: () => any | string)
-@Destroy(
-@Inject
+@Destroy
+@PostConstruct
 ```
