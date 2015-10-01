@@ -39,4 +39,8 @@ test/*.js
 src/*.d.ts
 test/*.d.ts
 
+
+src/**/*.js.map
+test/**/*.js.map
+
 dist/test

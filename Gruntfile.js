@@ -64,7 +64,7 @@ var conf = function(grunt) {
 
         copy: {
             build: {
-                src: "*.js*",
+                src: ["*.js*", "**/*.d.ts"],
                 dest: props.targetDir + "/",
                 cwd: props.srcDir,
                 expand: true // it appears you need to you need expand:true when using cwd https://github.com/gruntjs/grunt-contrib-copy/issues/90que
