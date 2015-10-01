@@ -38,3 +38,5 @@ test/*.js
 
 src/*.d.ts
 test/*.d.ts
+
+dist/test

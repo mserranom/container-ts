@@ -1,4 +1,4 @@
-///<reference path='./immutable.d.ts'/>
+///<reference path='./lib/immutable.d.ts'/>
 import Immutable = require('immutable');
 
 
