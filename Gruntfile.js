@@ -1,96 +1,108 @@
-module.exports = function (grunt) {
+"use strict";
 
-    "use strict";
+var conf = function(grunt) {
 
-    var project = {
+    var props = {
+        package : 'package.json',
         srcDir : 'src',
         testDir : 'test',
         targetDir : 'dist',
         targetTestDir : 'dist/test',
-        name : 'container',
-        version : '<%= pkg.version %>',
-        extension : 'ts'
+        name : '<%= pkg.name %>',
+        version : '<%= pkg.version %>'
     };
-    project.targetJs = project.targetDir + '/' + project.name + '.js';
-    project.targetJsMin = project.targetDir + '/' + project.name + '.min.js';
-    project.targetTestJs = project.targetTestDir + '/' + project.name + '-test' + '.js';
 
+    props.targetJs = props.targetDir + '/' + props.name + '.js';
+    props.targetJsMin = props.targetDir + '/' + props.name + '.min.js';
+    props.targetTestJs = props.targetTestDir + '/' + props.name + '-test' + '.js';
 
-    grunt.initConfig({
+    props.clean = {};
+    props.clean.includes = [ props.targetDir, '_SpecRunner.html', props.srcDir + '/**/*.js', props.srcDir + '/**/*.js.map',
+        props.srcDir + '/**/*.html', props.testDir + '/**/*.js',  props.testDir + '/**/*.js.map',
+        props.srcDir + '/**/*.d.ts', props.testDir + '/**/*.d.ts',props.testDir + '/**/*.html'];
 
-        pkg: grunt.file.readJSON('package.json'),
-
-        clean:{
-            target:[ project.targetDir,'_SpecRunner.html', project.srcDir + '/**/*.js', project.srcDir + '/**/*.js.map',
-                project.srcDir + '/**/*.html', project.testDir + '/**/*.js',  project.testDir + '/**/*.js.map',
-                project.srcDir + '/**/*.d.ts', project.testDir + '/**/*.d.ts',project.testDir + '/**/*.html']
-        },
-
-        typescript: {
-            base: {
-                src: [project.srcDir + '/*.ts'],
-                dest: project.targetJs
-            },
-            test: {
-                src: [project.testDir + '/*.ts'],
-                dest: project.targetTestJs
-            },
+    props.mocha = {};
+    props.mocha.test = {
             options: {
-                module: 'commonjs',
-                target: 'ES5',
-                basePath: project.srcDir,
-                sourceMap: false,
-                declaration: true,
-                removeComments: true
-            }
-        },
+                reporter: 'spec',
+                captureFile: props.targetTestDir + '/results.txt', // Optionally capture the reporter output to a file
+                quiet: false, // Optionally suppress output to standard out (defaults to false)
+                clearRequireCache: true // Optionally clear the require cache before running tests (defaults to false)
+            },
+            src: [props.testDir + '/*.js']
+        };
 
-        mochaTest: {
-            test: {
-                options: {
-                    reporter: 'spec',
-                    captureFile: project.targetTestDir + '/results.txt', // Optionally capture the reporter output to a file
-                    quiet: false, // Optionally suppress output to standard out (defaults to false)
-                    clearRequireCache: true // Optionally clear the require cache before running tests (defaults to false)
-                },
-                src: [project.testDir + '/*.js']
-            }
-        },
+    props.notify = {};
+    props.notify.options = {
+            enabled: true,
+                max_jshint_notifications: 2, // maximum number of notifications from jshint output
+                title: '<%= pkg.name %>', // defaults to the name in package.json, or will use project directory's name
+                success: true, // whether successful grunt executions should be notified automatically
+                duration: 3 // the duration of notification in seconds, for `notify-send only
+        };
 
-        zip: {
-            'dist.zip': ['src/main/ts/*.js', 'node_modules/**/*']
-        },
-
-        watch: {
+    props.watch = {
             scripts: {
-                files: [project.srcDir + '/**/*.ts', project.testDir + '/**/*.ts'],
+                files: [props.srcDir + '/**/*.ts', props.testDir + '/**/*.ts'],
                 tasks: ['test'],
                 options: {
                     spawn: true
                 }
             }
+        };
+
+    var gruntConfig = {
+        pkg: props.package,
+
+        clean:{
+            target: props.clean
         },
 
-        notify_hooks: {
-            options: {
-                enabled: true,
-                max_jshint_notifications: 2, // maximum number of notifications from jshint output
-                title: '<%= pkg.name %>', // defaults to the name in package.json, or will use project directory's name
-                success: true, // whether successful grunt executions should be notified automatically
-                duration: 3 // the duration of notification in seconds, for `notify-send only
+        ts: {
+            default: {
+                tsconfig: true
             }
-        }
-    });
+        },
+
+        mochaTest: props.mocha,
+
+        watch: props.watch,
+
+        notify_hooks: props.notify
+    };
 
     grunt.loadNpmTasks("grunt-contrib-clean");
-    grunt.loadNpmTasks('grunt-typescript');
+    grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-notify');
 
-    grunt.registerTask("compile", ["clean", "typescript"]);
-    grunt.registerTask("test", ["compile", "mochaTest"]);
-    grunt.registerTask("default", ["test"]);
+    var tasks = [
+        ["compile", ["clean", "ts"]],
+        ["test", ["compile", "mochaTest"]],
+        ["default", ["test"]]
+    ];
+
+    tasks.forEach( function(task){ grunt.registerTask(task[0], task[1])} );
+
+    return {
+        properties : props,
+        grunt : gruntConfig
+    };
+
+};
+
+
+
+module.exports = function (grunt) {
+
+    "use strict";
+
+    var config = conf(grunt);
+
+    config.properties.name = "container";
+
+    grunt.initConfig(config.grunt);
 
     grunt.task.run('notify_hooks'); //requires 'brew install terminal-notifier'
 

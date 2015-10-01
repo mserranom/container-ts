@@ -10,14 +10,15 @@
     "grunt-contrib-watch": "0.6.1",
     "grunt-mocha-test": "^0.12.7",
     "grunt-notify": "^0.4.1",
-    "grunt-typescript": "0.6.2"
+    "grunt-ts": "5.0.0-beta.1"
   },
   "dependencies": {
     "immutable": "^3.7.4"
   },
   "main": "dist/container.js",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt test",
+    "build": "grunt"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,7 @@
     "email": "mserranom@gmail.com>",
     "url": "http://github.com/mserranom"
   },
-  "license": "The MIT License (MIT)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mserranom/container-ts/issues"
   }
