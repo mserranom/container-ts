@@ -55,8 +55,12 @@ MainClass {
 let container = ContainerBuilder.create();
 
 container.add(new MainClass());
-container.add(new DependencyClass1());
+container.add(new DependencyClass1(), 'elementId');
 container.add(new DependencyClass2());
+
+container.get('elementId'); // returns the instance of DependencyClass1 added as 'elementId'
+
+container.get(DependencyClass2); // returns the DependencyClass2 instance
 
 container.init();  // output: "Hello!
 
