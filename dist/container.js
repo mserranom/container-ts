@@ -1,4 +1,4 @@
-///<reference path='./immutable.d.ts'/>
+///<reference path='./lib/immutable.d.ts'/>
 var Immutable = require('immutable');
 var ContainerBuilder = (function () {
     function ContainerBuilder() {
