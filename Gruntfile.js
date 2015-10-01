@@ -17,7 +17,7 @@ var conf = function(grunt) {
     props.targetTestJs = props.targetTestDir + '/' + props.name + '-test' + '.js';
 
     props.clean = {};
-    props.clean.includes = [ props.targetDir, '_SpecRunner.html', props.srcDir + '/**/*.js', props.srcDir + '/**/*.js.map',
+    props.clean.target = [ props.targetDir, '_SpecRunner.html', props.srcDir + '/**/*.js', props.srcDir + '/**/*.js.map',
         props.srcDir + '/**/*.html', props.testDir + '/**/*.js',  props.testDir + '/**/*.js.map',
         props.srcDir + '/**/*.d.ts', props.testDir + '/**/*.d.ts',props.testDir + '/**/*.html'];
 
@@ -54,13 +54,26 @@ var conf = function(grunt) {
     var gruntConfig = {
         pkg: props.package,
 
-        clean:{
-            target: props.clean
-        },
+        clean: props.clean,
 
         ts: {
             default: {
                 tsconfig: true
+            }
+        },
+
+        copy: {
+            build: {
+                src: "*.js*",
+                dest: props.targetDir + "/",
+                cwd: props.srcDir,
+                expand: true // it appears you need to you need expand:true when using cwd https://github.com/gruntjs/grunt-contrib-copy/issues/90que
+            },
+            test: {
+                src: "*.js",
+                dest: props.targetTestDir + "/",
+                cwd: props.targetDir,
+                expand: true // it appears you need to you need expand:true when using cwd https://github.com/gruntjs/grunt-contrib-copy/issues/90que
             }
         },
 
@@ -72,13 +85,14 @@ var conf = function(grunt) {
     };
 
     grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-ts');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-notify');
 
     var tasks = [
-        ["compile", ["clean", "ts"]],
+        ["compile", ["clean", "ts", "copy"]],
         ["test", ["compile", "mochaTest"]],
         ["default", ["test"]]
     ];

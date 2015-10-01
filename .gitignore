@@ -28,10 +28,6 @@ node_modules
 
 .tscache
 
-dist
-
-target
-
 _SpecRunner.html
 *.iml
 *.ipr
@@ -42,8 +38,3 @@ test/*.js
 
 src/*.d.ts
 test/*.d.ts
-
-
-dist.zip
-
-tsconfig.json
