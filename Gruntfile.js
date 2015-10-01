@@ -19,7 +19,7 @@ var conf = function(grunt) {
     props.clean = {};
     props.clean.target = [ props.targetDir, '_SpecRunner.html', props.srcDir + '/**/*.js', props.srcDir + '/**/*.js.map',
         props.srcDir + '/**/*.html', props.testDir + '/**/*.js',  props.testDir + '/**/*.js.map',
-        props.srcDir + '/**/*.d.ts', props.testDir + '/**/*.d.ts',props.testDir + '/**/*.html'];
+        props.srcDir + '/*.d.ts', props.testDir + '/**/*.d.ts',props.testDir + '/**/*.html'];
 
     props.mocha = {};
     props.mocha.test = {
