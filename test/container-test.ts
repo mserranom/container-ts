@@ -5,21 +5,24 @@ import {ContainerBuilder, Container, Inject, PostConstruct, Destroy} from '../sr
 import {expect} from 'chai';
 
 class TestClass  {
-    
+
     @Inject(() => {return TestDependency1})
     dep1 : TestDependency1;
-    
+
     @Inject('dependency')
     dep2 : TestDependency2;
-    
+
+    @Inject()
+    testDependency3 : TestDependency3;
+
     initialised : boolean = false;
     destroyed : boolean = false;
-    
+
     @PostConstruct
     private init() : void {
         this.initialised = true;
     }
-    
+
     @Destroy
     destroy() : void {
         this.destroyed = true;
@@ -34,6 +37,10 @@ class TestDependency2  {
     label : string = 'hiya';
 }
 
+class TestDependency3  {
+    label : string = 'hiya!!';
+}
+
 describe('Container: ', () => {
 
     let container : Container;
@@ -41,7 +48,7 @@ describe('Container: ', () => {
     beforeEach(() => {
         container = ContainerBuilder.create();
     });
-    
+
     afterEach(() => {
         try {
             container.destroy();
@@ -53,7 +60,7 @@ describe('Container: ', () => {
         container.add(element);
         expect(container.get(TestDependency1)).equals(element);
     });
-    
+
     it('retrieving an element that wasnt registered returns undefined',() => {
         expect(container.get(TestDependency1)).to.be.undefined
     });
@@ -64,16 +71,20 @@ describe('Container: ', () => {
 
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
 
         container.init();
 
         expect(testObject.dep1).not.to.be.undefined;
         expect(testObject.dep2).not.to.be.undefined;
+        expect(testObject.testDependency3).not.to.be.undefined;
         expect(testObject.dep1).not.to.be.null;
         expect(testObject.dep2).not.to.be.null;
+        expect(testObject.testDependency3).not.to.be.null;
 
         expect(testObject.dep1.label).equals('hi');
         expect(testObject.dep2.label).equals('hiya');
+        expect(testObject.testDependency3.label).equals('hiya!!');
     });
 
     it('should invoke postconstruct methods',() => {
@@ -82,6 +93,7 @@ describe('Container: ', () => {
 
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
 
         container.init();
 
@@ -94,6 +106,7 @@ describe('Container: ', () => {
 
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
 
         container.init();
         container.destroy();
@@ -111,6 +124,7 @@ describe('Container: ', () => {
         container.add(testObject);
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
 
         let container2 = ContainerBuilder.create();
@@ -118,6 +132,7 @@ describe('Container: ', () => {
         container2.add(testObject2);
         container2.add(new TestDependency1());
         container2.add(new TestDependency2(), 'dependency');
+        container2.add(new TestDependency3(), 'testDependency3');
         container2.init();
 
         testObject.dep1.label = 'other label';
@@ -150,6 +165,7 @@ describe('Container: ', () => {
         container.add(new TestClass());
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
 
         let testObject = new TestClass();
@@ -165,6 +181,7 @@ describe('Container: ', () => {
         container.add(new TestClass(), 'element2');
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
 
         let element = container.get(TestClass);

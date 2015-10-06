@@ -27,6 +27,9 @@ var TestClass = (function () {
     __decorate([
         container_1.Inject('dependency')
     ], TestClass.prototype, "dep2");
+    __decorate([
+        container_1.Inject()
+    ], TestClass.prototype, "testDependency3");
     Object.defineProperty(TestClass.prototype, "init",
         __decorate([
             container_1.PostConstruct
@@ -48,6 +51,12 @@ var TestDependency2 = (function () {
         this.label = 'hiya';
     }
     return TestDependency2;
+})();
+var TestDependency3 = (function () {
+    function TestDependency3() {
+        this.label = 'hiya!!';
+    }
+    return TestDependency3;
 })();
 describe('Container: ', function () {
     var container;
@@ -73,19 +82,24 @@ describe('Container: ', function () {
         container.add(testObject);
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         chai_1.expect(testObject.dep1).not.to.be.undefined;
         chai_1.expect(testObject.dep2).not.to.be.undefined;
+        chai_1.expect(testObject.testDependency3).not.to.be.undefined;
         chai_1.expect(testObject.dep1).not.to.be.null;
         chai_1.expect(testObject.dep2).not.to.be.null;
+        chai_1.expect(testObject.testDependency3).not.to.be.null;
         chai_1.expect(testObject.dep1.label).equals('hi');
         chai_1.expect(testObject.dep2.label).equals('hiya');
+        chai_1.expect(testObject.testDependency3.label).equals('hiya!!');
     });
     it('should invoke postconstruct methods', function () {
         var testObject = new TestClass();
         container.add(testObject);
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         chai_1.expect(testObject.initialised).to.be.true;
     });
@@ -94,6 +108,7 @@ describe('Container: ', function () {
         container.add(testObject);
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         container.destroy();
         chai_1.expect(testObject.destroyed).to.be.true;
@@ -107,12 +122,14 @@ describe('Container: ', function () {
         container.add(testObject);
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         var container2 = container_1.ContainerBuilder.create();
         var testObject2 = new TestClass();
         container2.add(testObject2);
         container2.add(new TestDependency1());
         container2.add(new TestDependency2(), 'dependency');
+        container2.add(new TestDependency3(), 'testDependency3');
         container2.init();
         testObject.dep1.label = 'other label';
         chai_1.expect(testObject2.dep1.label).equals('hi');
@@ -138,6 +155,7 @@ describe('Container: ', function () {
         container.add(new TestClass());
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         var testObject = new TestClass();
         container.add(testObject, 'secondTestClass');
@@ -150,6 +168,7 @@ describe('Container: ', function () {
         container.add(new TestClass(), 'element2');
         container.add(new TestDependency1());
         container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
         container.init();
         var element = container.get(TestClass);
         var element1 = container.get('element1');

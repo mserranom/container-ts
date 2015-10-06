@@ -122,7 +122,13 @@ function Inject(parameter) {
             };
         }
         var resolveFunction = function (self, container) {
-            var query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
+            var query;
+            if (!parameter) {
+                query = propertyKey;
+            }
+            else {
+                query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
+            }
             var instance = container.get(query);
             if (instance == null || instance == undefined) {
                 throw 'unable to resolve injection';

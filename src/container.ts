@@ -127,7 +127,7 @@ export function Destroy(target:any, propertyKey:string, descriptor:any) {
     return descriptor;
 }
 
-export function Inject(parameter: (() => any) | string) {
+export function Inject(parameter?: (() => any) | string) {
     return function (target:any, propertyKey:any) {
         if (!target['__injections']) {
             target.__injections = [];
@@ -137,7 +137,13 @@ export function Inject(parameter: (() => any) | string) {
         }
 
         let resolveFunction = (self:any, container : ContainerImpl) => {
-            let query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
+            let query : any;
+
+            if(!parameter) {
+                query = propertyKey;
+            } else {
+                query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
+            }
             let instance = container.get(query);
             if (instance == null || instance == undefined) {
                 throw 'unable to resolve injection';

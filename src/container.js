@@ -56,7 +56,7 @@ var ContainerImpl = (function () {
         }
     };
     ContainerImpl.prototype.postConstruct = function () {
-        var resolvePostConstruct = function (item) {
+        let resolvePostConstruct = function (item) {
             if (item.__resolvePostconstruct) {
                 item.__resolvePostconstruct(item);
             }
@@ -70,7 +70,7 @@ var ContainerImpl = (function () {
         if (!this._isInitialised) {
             throw "the container hasn't been initialised";
         }
-        var resolveDestroy = function (item) {
+        let resolveDestroy = function (item) {
             if (item.__resolveDestroy) {
                 item.__resolveDestroy(item);
             }
@@ -121,9 +121,15 @@ function Inject(parameter) {
                 target.__injections.forEach(function (resolveFunc) { return resolveFunc(self, container); });
             };
         }
-        var resolveFunction = function (self, container) {
-            var query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
-            var instance = container.get(query);
+        let resolveFunction = function (self, container) {
+            let query;
+            if (!parameter) {
+                query = propertyKey;
+            }
+            else {
+                query = (typeof parameter === "string" || parameter instanceof String) ? parameter : parameter();
+            }
+            let instance = container.get(query);
             if (instance == null || instance == undefined) {
                 throw 'unable to resolve injection';
             }

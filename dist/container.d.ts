@@ -12,4 +12,4 @@ export declare class ContainerBuilder {
 }
 export declare function PostConstruct(target: any, propertyKey: string, descriptor: any): any;
 export declare function Destroy(target: any, propertyKey: string, descriptor: any): any;
-export declare function Inject(parameter: (() => any) | string): (target: any, propertyKey: any) => void;
+export declare function Inject(parameter?: (() => any) | string): (target: any, propertyKey: any) => void;
