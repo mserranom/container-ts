@@ -17,9 +17,9 @@
     "immutable": "^3.7.4"
   },
   "main": "dist/container.js",
+  "files": "dist",
   "scripts": {
-    "test": "grunt test",
-    "build": "grunt"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
