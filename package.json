@@ -17,6 +17,9 @@
     "immutable": "^3.7.4"
   },
   "main": "dist/container.js",
+  "typescript": {
+    "definition": "dist/container.d.ts"
+  },
   "files": "dist",
   "scripts": {
     "test": "grunt test"
