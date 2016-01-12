@@ -24,6 +24,7 @@ var conf = function(grunt) {
     props.mocha = {};
     props.mocha.test = {
             options: {
+                require: 'babel-core/register',
                 reporter: 'spec',
                 captureFile: props.targetTestDir + '/results.txt', // Optionally capture the reporter output to a file
                 quiet: false, // Optionally suppress output to standard out (defaults to false)

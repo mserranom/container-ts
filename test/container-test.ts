@@ -1,7 +1,9 @@
 ///<reference path="../typings/tsd.d.ts"/>
 ///<reference path="../src/container.ts"/>
 
-import {ContainerBuilder, Container, Inject, PostConstruct, Destroy} from '../src/container';
+"use strict"
+
+import {ContainerBuilder, Container, Inject, PostInject, Destroy, InjectConstructor} from '../src/container';
 import {expect} from 'chai';
 
 class TestClass  {
@@ -18,7 +20,7 @@ class TestClass  {
     initialised : boolean = false;
     destroyed : boolean = false;
 
-    @PostConstruct
+    @PostInject
     private init() : void {
         this.initialised = true;
     }
@@ -44,6 +46,26 @@ class TestDependency3  {
     label : string = 'hiya!!';
 }
 
+@InjectConstructor('testDependency1', 'testDependency2')
+class ConstructorInjected  {
+
+    private dep1 : TestDependency1;
+    private dep2 : TestDependency2;
+
+    constructor(param1 : TestDependency1, param2 : TestDependency2) {
+        this.dep1 = param1;
+        this.dep2 = param2;
+    }
+
+    sayHi1() : string {
+        return this.dep1.label;
+    }
+
+    sayHi2() : string {
+        return this.dep2.label;
+    }
+}
+
 describe('Container: ', () => {
 
     let container : Container;
@@ -58,14 +80,28 @@ describe('Container: ', () => {
         } catch(error) {}
     });
 
-    it('can have elements added and retrieved from the container',() => {
+    it('can have elements added by instance and retrieved from the container by constructor',() => {
         let element = new TestDependency1();
         container.add(element);
+        container.init();
         expect(container.get(TestDependency1)).equals(element);
     });
 
+    it('can have elements added by constructor and retrieved from the container by constructor',() => {
+        container.add(TestDependency1);
+        container.init();
+        expect(container.get(TestDependency1)).deep.equal(new TestDependency1());
+    });
+
+
     it('retrieving an element that wasnt registered returns undefined',() => {
         expect(container.get(TestDependency1)).to.be.undefined
+    });
+
+    it('elements can be retrieved when the container is not yet initialised',() => {
+        let element = new TestClass();
+        container.add(element);
+        expect(container.get(TestClass)).equals(element);
     });
 
     it('dependencies are resolved',() => {
@@ -232,6 +268,60 @@ describe('Container: ', () => {
         expect(element.dep2).equals(element1.dep2);
         expect(element.dep2).equals(element2.dep2);
         expect(element1.dep2).equals(element2.dep2);
+
+    });
+
+
+    describe('Constructor Injection:', () => {
+
+        it('dependencies should be resolved in constructor injection, adding the constructor as nameless',() => {
+            container.add(ConstructorInjected);
+            container.add(new TestDependency2(), 'testDependency2');
+            container.add(new TestDependency1(), 'testDependency1');
+            container.init();
+
+            let ctorInjected : ConstructorInjected = container.get(ConstructorInjected);
+
+            expect(ctorInjected).not.to.be.null;
+            expect(ctorInjected.sayHi1()).equals('hi');
+            expect(ctorInjected.sayHi2()).equals('hiya');
+        });
+
+        it('dependencies should be resolved in constructor injection, giving the constructor a name',() => {
+            container.add(ConstructorInjected, 'ctorInjected');
+            container.add(new TestDependency2(), 'testDependency2');
+            container.add(new TestDependency1(), 'testDependency1');
+            container.init();
+
+            let ctorInjected : ConstructorInjected = container.get('ctorInjected');
+
+            expect(ctorInjected).not.to.be.null;
+            expect(ctorInjected.sayHi1()).equals('hi');
+            expect(ctorInjected.sayHi2()).equals('hiya');
+        });
+
+        it('adding constructor injected elements after the container is created should resolve injections',() => {
+
+            container.add(new TestDependency2(), 'testDependency2');
+            container.add(new TestDependency1(), 'testDependency1');
+            container.init();
+
+            container.add(ConstructorInjected, 'ctorInjected');
+
+            let ctorInjected : ConstructorInjected = container.get('ctorInjected');
+
+            expect(ctorInjected).not.to.be.null;
+            expect(ctorInjected.sayHi1()).equals('hi');
+            expect(ctorInjected.sayHi2()).equals('hiya');
+        });
+
+        it('should throw an error when a parameter cannot be found',() => {
+
+            container.add(new TestDependency1(), 'testDependency1');
+            container.add(ConstructorInjected, 'ctorInjected');
+
+            expect(() => container.init()).to.throw("couldn't find constructor parameter 'testDependency2' for injection");
+        });
 
     });
 

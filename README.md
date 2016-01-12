@@ -1,5 +1,5 @@
 # container-ts
-Lightweight annotation-based dependency injection container for typescript.
+Lightweight decorator-based Dependency Injection container for Typescript and ES7.
 
 [![Build Status](https://travis-ci.org/mserranom/container-ts.png?branch=master)](https://travis-ci.org/mserranom/container-ts)
 
@@ -12,8 +12,10 @@ Lightweight annotation-based dependency injection container for typescript.
 Container {
     add(item: any): void;
     add(item: any, name: string): void;
-    get(clazz: Function): any;
+    get(ctor: Function): any;
     get(name: string): any;
+    has(ctor: Function): any;
+    has(name: string): any;
     init(): void;
     destroy(): void;
 }
@@ -32,14 +34,18 @@ class ContainerBuilder {
 ```typescript
 import {ContainerBuilder, Container, Inject, PostConstruct, Destroy} from './container';
 
+@InjectConstructor('ctorDependency1', 'ctorDependency2')
 MainClass {
 
     @Inject('elementId')  // injection by id
     dependency1 : DependencyClass1;
 
-
-    @Inject(() => {return DependencyClass2})  // injection by type
+    @Inject(() => DependencyClass2)  // injection by type
     dependency2 : DependencyClass2;
+
+    constructor(a : CtorDependency1, b : CtorDependency2) {
+        // ...
+    }
 
     @PostConstruct // invoked after all injections have been resolved
     init() {
@@ -57,6 +63,9 @@ let container = ContainerBuilder.create();
 container.add(new MainClass());
 container.add(new DependencyClass1(), 'elementId');
 container.add(new DependencyClass2());
+
+container.add(new CtorDependency1(), 'ctorDependency1');
+container.add(new CtorDependency2(), 'ctorDependency2');
 
 container.get('elementId'); // returns the instance of DependencyClass1 added as 'elementId'
 
