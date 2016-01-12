@@ -6,7 +6,7 @@ import {expect} from 'chai';
 
 class TestClass  {
 
-    @Inject(() => {return TestDependency1})
+    @Inject(() => TestDependency1)
     dep1 : TestDependency1;
 
     @Inject('dependency')
@@ -25,6 +25,9 @@ class TestClass  {
 
     @Destroy
     destroy() : void {
+        if(!this.dep1 || !this.dep2 || !this.testDependency3) {
+            throw new Error('injected elements have been nullified before destroying');
+        }
         this.destroyed = true;
     }
 }
@@ -159,6 +162,22 @@ describe('Container: ', () => {
         container.init();
         container.destroy();
         expect(() => container.add(new TestClass())).to.throw('cannot add elements to a destroyed context');
+    });
+
+    it('should nullify injected dependencies after destroying the context',() => {
+        let testObject = new TestClass();
+        container.add(testObject);
+
+        container.add(new TestDependency1());
+        container.add(new TestDependency2(), 'dependency');
+        container.add(new TestDependency3(), 'testDependency3');
+
+        container.init();
+        container.destroy();
+
+        expect(testObject.dep1).to.be.null;
+        expect(testObject.dep2).to.be.null;
+        expect(testObject.testDependency3).to.be.null;
     });
 
     it('should resolve injections for dynamically added elements',() => {

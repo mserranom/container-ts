@@ -83,12 +83,22 @@ class ContainerImpl implements Container {
         if(!this._isInitialised) {
             throw "the container hasn't been initialised"
         }
-        let resolveDestroy = (item:any) => {
+
+        let resolveDestroy = (item : Injectable) => {
             if (item.__cntnr__resolveDestroy) {
                 item.__cntnr__resolveDestroy(item);
             }
         };
-        this.getAll().forEach((item:any) => resolveDestroy(item));
+
+        let removeInjections = (item : Injectable) => {
+            if (item.__cntnr__removeInjections) {
+                item.__cntnr__removeInjections.forEach(f => f(item))
+            }
+        };
+
+        this.getAll().forEach((item:Injectable) => resolveDestroy(item));
+        this.getAll().forEach((item:Injectable) => removeInjections(item));
+
         this._contentByCtor = Immutable.Map<Function, any>();
         this._contentByName = Immutable.Map<string, any>();
         this._isDestroyed = true;
@@ -101,6 +111,7 @@ class ContainerImpl implements Container {
 
 interface Injectable {
     __cntnr__injections : Array<(self : any, container : ContainerImpl) => void>;
+    __cntnr__removeInjections : Array<(self : any) => void>;
     __cntnr__resolveDependencies : (self:any, container : Container) => void;
     __cntnr__destroys : Array<(self : any) => void>;
     __cntnr__resolveDestroy : (self : any) => void;
@@ -144,6 +155,7 @@ export function Inject(parameter?: (() => any) | string) {
         let injectable : Injectable = target;
         if (!injectable.__cntnr__injections) {
             injectable.__cntnr__injections = [];
+            injectable.__cntnr__removeInjections = [];
             injectable.__cntnr__resolveDependencies = (self:any, container : Container) => {
                 injectable.__cntnr__injections.forEach((resolveFunc:Function) => resolveFunc(self, container));
             };
@@ -165,5 +177,6 @@ export function Inject(parameter?: (() => any) | string) {
         };
 
         injectable.__cntnr__injections.push(resolveFunction);
+        injectable.__cntnr__removeInjections.push(function(self) { self[propertyKey] = null});
     }
 }
