@@ -1,6 +1,6 @@
 {
   "name": "container-ts",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "dependencies": {
     "immutable": {
       "version": "3.7.4",
