@@ -22,7 +22,7 @@
   },
   "files": "dist",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test && npm shrinkwrap"
   },
   "repository": {
     "type": "git",
