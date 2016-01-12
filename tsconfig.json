@@ -11,6 +11,7 @@
     },
     "files": [
         "src/container.ts",
-        "test/container-test.ts"
+        "test/container-test.ts",
+        "typings/tsd.d.ts"
     ]
 }

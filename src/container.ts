@@ -62,15 +62,15 @@ class ContainerImpl implements Container {
     }
 
     private resolveInjectionsFor(item : any) : void {
-        if (item.__resolveDependencies) {
-            item.__resolveDependencies(item, this);
+        if (item.__cntnr__resolveDependencies) {
+            item.__cntnr__resolveDependencies(item, this);
         }
     }
 
     postConstruct():void {
         let resolvePostConstruct = (item:any) => {
-            if (item.__resolvePostconstruct) {
-                item.__resolvePostconstruct(item);
+            if (item.__cntnr__resolvePostconstruct) {
+                item.__cntnr__resolvePostconstruct(item);
             }
         };
         this.getAll().forEach((item:any) => resolvePostConstruct(item));
@@ -84,8 +84,8 @@ class ContainerImpl implements Container {
             throw "the container hasn't been initialised"
         }
         let resolveDestroy = (item:any) => {
-            if (item.__resolveDestroy) {
-                item.__resolveDestroy(item);
+            if (item.__cntnr__resolveDestroy) {
+                item.__cntnr__resolveDestroy(item);
             }
         };
         this.getAll().forEach((item:any) => resolveDestroy(item));
@@ -99,29 +99,41 @@ class ContainerImpl implements Container {
     }
 }
 
+interface Injectable {
+    __cntnr__injections : Array<(self : any, container : ContainerImpl) => void>;
+    __cntnr__resolveDependencies : (self:any, container : Container) => void;
+    __cntnr__destroys : Array<(self : any) => void>;
+    __cntnr__resolveDestroy : (self : any) => void;
+    __cntnr__postconstructs : Array<(self : any) => void>;
+    __cntnr__resolvePostconstruct : (self : any) => void;
+}
+
+
 export function PostConstruct(target:any, propertyKey:string, descriptor:any) {
-    if (!target['__postconstructs']) {
-        target.__postconstructs = [];
-        target.__resolvePostconstruct = (self:any) => {
-            target.__postconstructs.forEach((postConstructFunc:Function) => {
+    let injectable : Injectable = target;
+    if (!injectable['__cntnr__postconstructs']) {
+        injectable.__cntnr__postconstructs = [];
+        injectable.__cntnr__resolvePostconstruct = (self:any) => {
+            injectable.__cntnr__postconstructs.forEach((postConstructFunc:Function) => {
                 postConstructFunc(self)
             });
         };
     }
-    target.__postconstructs.push((self:any) => {
+    injectable.__cntnr__postconstructs.push((self:any) => {
         self[propertyKey]()
     });
     return descriptor;
 }
 
 export function Destroy(target:any, propertyKey:string, descriptor:any) {
-    if (!target['__destroys']) {
-        target.__destroys = [];
-        target.__resolveDestroy = (self:any) => {
-            target.__destroys.forEach((destroyFunc:Function) => destroyFunc(self));
+    let injectable : Injectable = target;
+    if (!injectable.__cntnr__destroys) {
+        injectable.__cntnr__destroys = [];
+        injectable.__cntnr__resolveDestroy = (self:any) => {
+            injectable.__cntnr__destroys.forEach((destroyFunc:Function) => destroyFunc(self));
         };
     }
-    target.__destroys.push((self:any) => {
+    injectable.__cntnr__destroys.push((self:any) => {
         self[propertyKey]()
     });
     return descriptor;
@@ -129,10 +141,11 @@ export function Destroy(target:any, propertyKey:string, descriptor:any) {
 
 export function Inject(parameter?: (() => any) | string) {
     return function (target:any, propertyKey:any) {
-        if (!target['__injections']) {
-            target.__injections = [];
-            target.__resolveDependencies = (self:any, container : Container) => {
-                target.__injections.forEach((resolveFunc:Function) => resolveFunc(self, container));
+        let injectable : Injectable = target;
+        if (!injectable.__cntnr__injections) {
+            injectable.__cntnr__injections = [];
+            injectable.__cntnr__resolveDependencies = (self:any, container : Container) => {
+                injectable.__cntnr__injections.forEach((resolveFunc:Function) => resolveFunc(self, container));
             };
         }
 
@@ -151,6 +164,6 @@ export function Inject(parameter?: (() => any) | string) {
             self[propertyKey] = instance;
         };
 
-        target.__injections.push(resolveFunction);
+        injectable.__cntnr__injections.push(resolveFunction);
     }
 }
