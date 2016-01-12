@@ -57,8 +57,11 @@ var conf = function(grunt) {
         clean: props.clean,
 
         ts: {
+            options: {
+                fast: 'never'
+            },
             default: {
-                tsconfig: true
+                tsconfig: './tsconfig.json'
             }
         },
 

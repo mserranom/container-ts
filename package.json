@@ -7,14 +7,14 @@
     "grunt": "0.4.5",
     "grunt-cli": "0.1.13",
     "grunt-contrib-clean": "0.4.0",
-    "grunt-contrib-copy": "^0.8.1",
+    "grunt-contrib-copy": "0.8.1",
     "grunt-contrib-watch": "0.6.1",
-    "grunt-mocha-test": "^0.12.7",
-    "grunt-notify": "^0.4.1",
-    "grunt-ts": "5.0.0-beta.1"
+    "grunt-mocha-test": "0.12.7",
+    "grunt-notify": "0.4.1",
+    "grunt-ts": "5.3.0-beta.2"
   },
   "dependencies": {
-    "immutable": "^3.7.4"
+    "immutable": "3.7.4"
   },
   "main": "dist/container.js",
   "typescript": {

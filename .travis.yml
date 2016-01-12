@@ -1,9 +1,10 @@
 language: node_js
 sudo: false
 node_js:
-- '0.12'
+  - "4.1.0"
 before_install:
-- npm install -g grunt-cli
+  - npm install -g grunt-cli
+  - npm install -g typescript@1.7.5
 deploy:
   provider: npm
   skip_cleanup: true
