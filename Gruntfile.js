@@ -13,7 +13,6 @@ var conf = function(grunt) {
     };
 
     props.targetJs = props.targetDir + '/' + props.name + '.js';
-    props.targetJsMin = props.targetDir + '/' + props.name + '.min.js';
     props.targetTestJs = props.targetTestDir + '/' + props.name + '-test' + '.js';
 
     props.clean = {};
@@ -30,7 +29,7 @@ var conf = function(grunt) {
                 quiet: false, // Optionally suppress output to standard out (defaults to false)
                 clearRequireCache: true // Optionally clear the require cache before running tests (defaults to false)
             },
-            src: [props.testDir + '/*.js']
+            src: [props.targetTestDir + '/*.js']
         };
 
     props.notify = {};
