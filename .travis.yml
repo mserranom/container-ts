@@ -1,11 +1,21 @@
 language: node_js
+
 sudo: false
+
 node_js:
   - "4.1.0"
+env:
+  - NPM_VERSION=3.5.2
+
 before_install:
+  - npm install -g npm@$NPM_VERSION
+  - npm --version
   - npm install -g grunt-cli
   - npm install -g typescript@1.7.5
-  - npm install -g npm@$3.5.2
+
+script:
+  - true
+
 deploy:
   provider: npm
   skip_cleanup: true
