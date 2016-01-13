@@ -1,9 +1,4 @@
-///<reference path='./lib/immutable.d.ts'/>
-
-"use strict"
-
-import Immutable = require('immutable');
-
+"use strict";
 
 // ------------------
 // SUPPORT

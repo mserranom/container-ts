@@ -2,11 +2,6 @@
   "name": "container-ts",
   "version": "0.7.1",
   "dependencies": {
-    "immutable": {
-      "version": "3.7.4",
-      "from": "immutable@3.7.4",
-      "resolved": "https://registry.npmjs.org/immutable/-/immutable-3.7.4.tgz"
-    },
     "mocha": {
       "version": "2.3.4",
       "from": "mocha@>=1.20.0",
