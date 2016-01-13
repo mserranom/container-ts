@@ -14,7 +14,7 @@ before_install:
   - npm install -g typescript@1.7.5
 
 script:
-  - true
+  - grunt test
 
 deploy:
   provider: npm
