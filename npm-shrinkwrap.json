@@ -15,7 +15,7 @@
     "ansi-green": {
       "version": "0.1.1",
       "from": "ansi-green@>=0.1.1 <0.2.0",
-      "resolved": "http://mserranom217-8081.terminal.com/nexus/content/groups/npm-all/ansi-green/-/ansi-green-0.1.1.tgz"
+      "resolved": "https://registry.npmjs.org/ansi-green/-/ansi-green-0.1.1.tgz"
     },
     "ansi-regex": {
       "version": "2.0.0",
@@ -444,7 +444,7 @@
     "extglob": {
       "version": "0.3.1",
       "from": "extglob@>=0.3.1 <0.4.0",
-      "resolved": "http://mserranom217-8081.terminal.com/nexus/content/groups/npm-all/extglob/-/extglob-0.3.1.tgz"
+      "resolved": "https://registry.npmjs.org/extglob/-/extglob-0.3.1.tgz"
     },
     "faye-websocket": {
       "version": "0.4.4",
@@ -1093,7 +1093,7 @@
     "success-symbol": {
       "version": "0.1.0",
       "from": "success-symbol@>=0.1.0 <0.2.0",
-      "resolved": "http://mserranom217-8081.terminal.com/nexus/content/groups/npm-all/success-symbol/-/success-symbol-0.1.0.tgz"
+      "resolved": "https://registry.npmjs.org/success-symbol/-/success-symbol-0.1.0.tgz"
     },
     "supports-color": {
       "version": "2.0.0",
@@ -1103,7 +1103,7 @@
     "tiny-lr-fork": {
       "version": "0.0.5",
       "from": "tiny-lr-fork@0.0.5",
-      "resolved": "http://mserranom217-8081.terminal.com/nexus/content/groups/npm-all/tiny-lr-fork/-/tiny-lr-fork-0.0.5.tgz",
+      "resolved": "https://registry.npmjs.org/tiny-lr-fork/-/tiny-lr-fork-0.0.5.tgz",
       "dependencies": {
         "debug": {
           "version": "0.7.4",
