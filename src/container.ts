@@ -90,8 +90,8 @@ class ContainerImpl implements Container {
 
     private _deferredConstructors : Array<ConstructorDescriptor> = [];
 
-    private _contentByCtor:Immutable.Map<Function, any> = Immutable.Map<Function, any>();
-    private _contentByName:Immutable.Map<string, any> = Immutable.Map<string, any>();
+    private _contentByCtor : Map<Function, any> = new Map();
+    private _contentByName : Map<string, any> = new Map();
 
     private _isInitialised : Boolean = false;
     private _isDestroyed : Boolean = false;
@@ -127,9 +127,9 @@ class ContainerImpl implements Container {
 
     private addElement(element : any, name?:string) : void {
         if(name) {
-            this._contentByName = this._contentByName.set(name, element);
+            this._contentByName.set(name, element);
         } else {
-            this._contentByCtor = this._contentByCtor.set(element.constructor, element);
+            this._contentByCtor.set(element.constructor, element);
         }
 
         if(this._isInitialised) {
@@ -187,9 +187,9 @@ class ContainerImpl implements Container {
         let obj = createNew.apply(null,[ctorDescriptor.ctor].concat(args));
 
         if(ctorDescriptor.name) {
-            this._contentByName = this._contentByName.set(ctorDescriptor.name, obj);
+            this._contentByName.set(ctorDescriptor.name, obj);
         } else {
-            this._contentByCtor = this._contentByCtor.set(ctorDescriptor.ctor, obj);
+            this._contentByCtor.set(ctorDescriptor.ctor, obj);
         }
     }
 
@@ -235,14 +235,14 @@ class ContainerImpl implements Container {
         this.getAll().forEach((item:Injectable) => resolveDestroy(item));
         this.getAll().forEach((item:Injectable) => removeInjections(item));
 
-        this._contentByCtor = Immutable.Map<Function, any>();
-        this._contentByName = Immutable.Map<string, any>();
+        this._contentByCtor = new Map();
+        this._contentByName = new Map();
         this._deferredConstructors = [];
         this._isDestroyed = true;
     }
 
-    private getAll() : Immutable.Iterable<any, any> {
-        return this._contentByCtor.valueSeq().concat(this._contentByName.valueSeq());
+    private getAll() : Array<any> {
+        return Array.from(this._contentByCtor.values()).concat(Array.from(this._contentByName.values()))
     }
 }
 
