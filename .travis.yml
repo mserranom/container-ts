@@ -10,11 +10,9 @@ env:
 before_install:
   - npm install -g npm@$NPM_VERSION
   - npm --version
-  - npm install -g grunt-cli
-  - npm install -g typescript@1.7.5
 
 script:
-  - grunt test
+  - npm test
 
 deploy:
   provider: npm
