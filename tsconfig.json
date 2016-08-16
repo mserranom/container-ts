@@ -1,19 +1,15 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2015",
         "module": "commonjs",
         "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
-        "declaration": true,
-        "outDir": "dist"
+        "experimentalDecorators" : true,
+        "strictNullChecks" : false,
+        "noImplicitUseStrict" : false
     },
-    "files": [
-        "src/container.ts",
-        "test/container-test.ts",
-        "typings/tsd.d.ts"
+    "include": [
+        "test/**/*"
     ]
 }

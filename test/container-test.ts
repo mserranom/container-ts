@@ -1,10 +1,11 @@
-///<reference path="../typings/tsd.d.ts"/>
 ///<reference path="../src/container.ts"/>
+///<reference path="./../typings/chai.d.ts"/>
 
-"use strict"
+"use strict";
 
 import {ContainerBuilder, Container, Inject, PostInject, Destroy, InjectConstructor} from '../src/container';
-import {expect} from 'chai';
+
+const expect = require('chai').expect;
 
 class TestClass  {
 
