@@ -1,7 +1,7 @@
 # container-ts
 Lightweight decorator-based Dependency Injection container for Typescript and ES7.
 
-[![Build Status](https://travis-ci.org/mserranom/container-ts.svg?branch=master)](https://travis-ci.org/mserranom/container-ts)
+[![Build Status](https://travis-ci.org/mserranom/container-ts.svg?branch=master)](https://travis-ci.org/mserranom/container-ts) [![npm version](https://badge.fury.io/js/container-ts.svg)](https://badge.fury.io/js/container-ts)
 
 ## Features
  * Dependency Injection via ES6 Decorators
