@@ -75,3 +75,9 @@ container.init();  // output: "Hello!
 
 container.destroy(); // output: "destroy"
 ```
+
+## Building
+
+```
+npm install && npm test
+```
