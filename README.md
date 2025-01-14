@@ -3,6 +3,10 @@ Lightweight decorator-based Dependency Injection container for Typescript and ES
 
 [![Build Status](https://travis-ci.org/mserranom/container-ts.svg?branch=master)](https://travis-ci.org/mserranom/container-ts) [![npm version](https://badge.fury.io/js/container-ts.svg)](https://badge.fury.io/js/container-ts)
 
+## ⚠️ Status 
+
+This project is no longer maintained.
+
 ## Features
  * Dependency Injection via ES6 Decorators
  * Container lifecycle management
